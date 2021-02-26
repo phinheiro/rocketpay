@@ -29,11 +29,12 @@ defmodule Rocketpay.User do
     |> validate_format(:email, ~r/@/)
     |> unique_constraint([:email])
     |> unique_constraint([:nickname])
+    |> put_password_hash()
   end
 
-  # defp put_password_hash(%Changeset{valid?: true, changes: %{password: password}} = changeset) do
-  #   changeset(changeset, )
-  # end
+  defp put_password_hash(%Changeset{valid?: true, changes: %{password: password}} = changeset) do
+    change(changeset, Pbkdf2.add_hash(password))
+  end
 
-  # defp put_password_hash(changeset), do: changeset
+  defp put_password_hash(changeset), do: changeset
 end
